@@ -1,0 +1,29 @@
+version: '3'
+
+services:
+  etcd:
+    image: quay.io/coreos/etcd
+    command: |
+             etcd --name etcd
+             --advertise-client-urls http://0.0.0.0:2379
+             --listen-client-urls http://0.0.0.0:2379
+             --initial-advertise-peer-urls http://0.0.0.0:2380
+             --listen-peer-urls http://0.0.0.0:2380
+             --initial-cluster-token etcd-cluster
+             --initial-cluster etcd=http://0.0.0.0:2380
+             --initial-cluster-state new
+             --debug
+    expose:
+      - "2379"
+
+  zetcd:
+    image: quay.io/coreos/zetcd
+    command: -endpoints=http://etcd:2379 -zkaddr=:2181 -logtostderr -v 10
+    depends_on:
+      - etcd
+    depends_on:
+      - etcd
+    links:
+      - etcd
+    ports:
+      - "2181:2181"
