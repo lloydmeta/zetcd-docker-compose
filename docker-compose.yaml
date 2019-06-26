@@ -21,8 +21,6 @@ services:
     command: -endpoints=http://etcd:2379 -zkaddr=:2181 -logtostderr -v 10
     depends_on:
       - etcd
-    depends_on:
-      - etcd
     links:
       - etcd
     ports:
